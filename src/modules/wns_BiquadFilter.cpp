@@ -13,7 +13,7 @@ wns_BiquadFilter::~wns_BiquadFilter()
     // Destructor implementation
 }
 
-wsn_eF wns_BiquadFilter::vSetFilterType(wns_BiquadType type)
+wsn_eF wns_BiquadFilter::eSetFilterType(wns_BiquadType type)
 {
     if(!bIsParamSet)
     {
@@ -104,13 +104,12 @@ wsn_eF wns_BiquadFilter::vSetFilterType(wns_BiquadType type)
     return WSN_NO_ERROR;
 }
 
-wsn_eF wns_BiquadFilter::vSetFilterParams(double dFc, double dQ, double dGainDB, double dSlope)
+void wns_BiquadFilter::vSetFilterParams(double dFc, double dQ, double dGainDB, double dSlope)
 {
     this->dFc = dFc;
     this->dQfactor = dQ;
     this->dGaindB = dGainDB;
     this->dShelfSlope = dSlope;
     this->bIsParamSet = true;
-    return WSN_NO_ERROR;
 }
 }

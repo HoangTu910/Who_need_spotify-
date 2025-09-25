@@ -33,8 +33,8 @@ public:
     wns_BiquadFilter();
     ~wns_BiquadFilter();
 
-    wsn_eF vSetFilterType(wns_BiquadType type);
-    wsn_eF vSetFilterParams(double dFc, double dQ, double dGainDB = 0.0, double dSlope = 1.0);
+    wsn_eF eSetFilterType(wns_BiquadType type);
+    void vSetFilterParams(double dFc, double dQ, double dGainDB = 0.0, double dSlope = 1.0);
 
 private:
     double dGaindB /* Only for PEAKING and SHELVING EQ filters */, 
