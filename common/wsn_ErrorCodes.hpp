@@ -1,0 +1,18 @@
+#ifndef _WSN_ERROR_CODES_H_
+#define _WSN_ERROR_CODES_H_
+
+enum WSN_ErrorCodes
+{
+    WSN_NO_ERROR = 0,
+    WSN_INVALID_ARGUMENT,
+    WSN_OUT_OF_MEMORY,
+    WSN_BUFFER_OVERFLOW,
+    WSN_UNSUPPORTED_OPERATION,
+    WSN_UNKNOWN_ERROR,
+    WSN_UNKNOWN_FILTER_TYPE,
+    WSN_UNSET_PARAMETERS
+};
+
+using wsn_eF = WSN_ErrorCodes;
+
+#endif
