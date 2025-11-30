@@ -6,11 +6,13 @@ namespace wns_Filters
 wns_BiquadFilter::wns_BiquadFilter()
 {
     // Constructor implementation
+    WNS_LOG("wns_BiquadFilter constructor called.");
 }
 
 wns_BiquadFilter::~wns_BiquadFilter()
 {
     // Destructor implementation
+    WNS_LOG("wns_BiquadFilter destructor called.");
 }
 
 wsn_eF wns_BiquadFilter::eSetFilterType(wns_BiquadType type)
@@ -112,4 +114,14 @@ void wns_BiquadFilter::vSetFilterParams(double dFc, double dQ, double dGainDB, d
     this->dShelfSlope = dSlope;
     this->bIsParamSet = true;
 }
+}
+
+double wns_Filters::wns_BiquadFilter::sExecute(double dInputSample)
+{
+    double dOutputSample = (sCoeffs.b0 / sCoeffs.a0) * dInputSample +
+                           (sCoeffs.b1 / sCoeffs.a0) * dXn1 +
+                           (sCoeffs.b2 / sCoeffs.a0) * dXn2 -
+                           (sCoeffs.a1 / sCoeffs.a0) * dYn1 -
+                           (sCoeffs.a2 / sCoeffs.a0) * dYn2;
+    return dOutputSample;
 }

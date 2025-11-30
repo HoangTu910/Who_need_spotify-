@@ -16,6 +16,12 @@ struct wns_BiquadCoefficients
     double a0;
 };
 
+struct wns_BiquadResponse
+{
+    double magnitude;
+    double phase;
+};
+
 enum wns_BiquadType
 {
     LOWPASS,
@@ -35,7 +41,7 @@ public:
 
     wsn_eF eSetFilterType(wns_BiquadType type);
     void vSetFilterParams(double dFc, double dQ, double dGainDB = 0.0, double dSlope = 1.0);
-
+    double sExecute(double dInputSample);
 private:
     double dGaindB /* Only for PEAKING and SHELVING EQ filters */, 
            dShelfSlope, 
@@ -47,6 +53,7 @@ private:
     double dA; /* Only for PEAKING and SHELVING EQ filters */
     bool bIsParamSet;
     wns_BiquadCoefficients sCoeffs;
+    wns_BiquadResponse sResponse;
 };
 }
 

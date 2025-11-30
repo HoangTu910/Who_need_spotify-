@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  cpp:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ..:/app
+    command: ["./src/cpp/main"]
+
+  python:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ..:/app
+    command: ["python", "./src/python/plot_frequency_response.py"]
+
+networks:
+  default:
+    driver: bridge

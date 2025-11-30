@@ -3,9 +3,9 @@
 
 #include <iostream>
 
-#define WNS_LOG(msg) std::cout << msg << std::endl;
-#define WNS_ERROR(msg) std::cerr << "Error: " << msg << std::endl;
-#define WNS_WARNING(msg) std::cerr << "Warning: " << msg << std::endl;
-#define WNS_DEBUG(msg) std::cout << "Debug: " << msg << std::endl;
+#define WNS_LOG(msg) std::cout << "[WSN_LOG] " << msg << std::endl;
+#define WNS_ERROR(msg) std::cerr << "[WSN_ERROR] " << msg << std::endl;
+#define WNS_WARNING(msg) std::cerr << "[WSN_WARNING] " << msg << std::endl;
+#define WNS_DEBUG(msg) std::cout << "[WSN_DEBUG] " << msg << std::endl;
 
 #endif
