@@ -1,3 +1,8 @@
+/**
+ * Biquad Filter is a Second-order filter
+ * This second order filter will use for all filtering task in this project
+ */
+
 #ifndef _BIQUAD_FILTER_H_
 #define _BIQUAD_FILTER_H_
 
