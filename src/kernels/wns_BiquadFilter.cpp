@@ -7,6 +7,17 @@ wns_BiquadFilter::wns_BiquadFilter()
 {
     // Constructor implementation
     WNS_LOG("wns_BiquadFilter constructor called.");
+    // Initialize filter state and params to safe defaults
+    dGaindB = 0.0;
+    dShelfSlope = 1.0;
+    dQfactor = 1.0;
+    dBandwidth = 0.0;
+    dOmega = 0.0;
+    dAlpha = 0.0;
+    dFc = 0.0;
+    dXn1 = dXn2 = dYn1 = dYn2 = 0.0;
+    dA = 1.0;
+    bIsParamSet = false;
 }
 
 wns_BiquadFilter::~wns_BiquadFilter()
@@ -115,11 +126,21 @@ void wns_BiquadFilter::vSetFilterParams(double dFc, double dQ, double dGainDB, d
 
 double wns_Kernels::wns_BiquadFilter::sExecute(double dInputSample)
 {
+    // Direct Form I/II style difference equation (using stored histories)
     double dOutputSample = (sCoeffs.b0 / sCoeffs.a0) * dInputSample +
                            (sCoeffs.b1 / sCoeffs.a0) * dXn1 +
                            (sCoeffs.b2 / sCoeffs.a0) * dXn2 -
                            (sCoeffs.a1 / sCoeffs.a0) * dYn1 -
                            (sCoeffs.a2 / sCoeffs.a0) * dYn2;
+
+    // shift histories: x[n-2] = x[n-1], x[n-1] = x[n]
+    dXn2 = dXn1;
+    dXn1 = dInputSample;
+
+    // y histories: y[n-2] = y[n-1], y[n-1] = y[n]
+    dYn2 = dYn1;
+    dYn1 = dOutputSample;
+
     return dOutputSample;
 }
 

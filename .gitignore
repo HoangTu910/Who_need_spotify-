@@ -2,3 +2,5 @@
 /.vscode
 /.devcontainer
 /draft
+/.venv
+/log

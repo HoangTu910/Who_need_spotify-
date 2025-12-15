@@ -3,6 +3,10 @@
 #include <cstring>
 #include <iostream>
 
+#ifndef HAVE_SNDFILE
+#define HAVE_SNDFILE
+#endif
+
 // Prefer libsndfile when available; otherwise fall back to the local WAV helpers below.
 #ifdef HAVE_SNDFILE
 #include <sndfile.h>
@@ -138,6 +142,55 @@ wsn_eF WNS_Preprocessing::processFile(const std::string& inputPath, const std::s
 		return WSN_INVALID_ARGUMENT;
 	}
 
+	return WSN_NO_ERROR;
+}
+
+wsn_eF WNS_Preprocessing::readAudioToBuffer(const std::string& inputPath, wns_infrastructure::BufferChunk& buffer) {
+	std::vector<float> samples;
+	int channels = 0;
+	int sampleRate = 0;
+
+	if (!readWavFloat(inputPath, samples, channels, sampleRate)) {
+		std::cerr << "readAudioToBuffer: failed to read " << inputPath << std::endl;
+		return WSN_INVALID_ARGUMENT;
+	}
+
+	if (channels <= 0) return WSN_INVALID_ARGUMENT;
+	size_t frames = samples.size() / static_cast<size_t>(channels);
+
+	// Populate buffer
+	buffer.frames = frames;
+	buffer.channels = channels;
+	buffer.sampleRate = sampleRate;
+	buffer.pBuffer.resize(samples.size());
+	for (size_t i = 0; i < samples.size(); ++i) buffer.pBuffer[i] = static_cast<tFloat>(samples[i]);
+
+	return WSN_NO_ERROR;
+}
+
+wsn_eF WNS_Preprocessing::writeBufferToAudio(const std::string& outputPath, const wns_infrastructure::BufferChunk& buffer) {
+	if (buffer.frames == 0 || buffer.channels <= 0) return WSN_INVALID_ARGUMENT;
+	// Use helper to write pBuffer
+	if (!writeWavFloat(outputPath, buffer.pBuffer, buffer.channels, buffer.sampleRate)) {
+		std::cerr << "writeBufferToAudio: failed to write " << outputPath << std::endl;
+		return WSN_INVALID_ARGUMENT;
+	}
+	return WSN_NO_ERROR;
+}
+
+wsn_eF WNS_Preprocessing::writeBufferToTxt(const std::string& filename, const wns_infrastructure::BufferChunk& buffer) {
+	if (buffer.frames == 0 || buffer.channels <= 0) return WSN_INVALID_ARGUMENT;
+
+	std::string fullPath = "log/" + filename + ".txt";
+	std::ofstream f(fullPath);
+	if (!f) return WSN_INVALID_ARGUMENT;
+
+	// Write interleaved samples, one per line
+	size_t total = buffer.samples();
+	for (size_t i = 0; i < total; ++i) {
+		f << buffer.pBuffer[i] << '\n';
+	}
+	f.close();
 	return WSN_NO_ERROR;
 }
 

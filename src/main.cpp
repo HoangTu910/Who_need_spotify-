@@ -1,31 +1,41 @@
 #include "../inc/kernels/wns_BiquadFilter.hpp"
 #include "../inc/kernels/wns_FFT.hpp"
+#include "../inc/buffer/wns_BufferManagement.hpp"
+#include "../inc/modules/wns_Preprocessing.hpp"
+#include <sndfile.h>
+#include <iostream>
 
 int main()
 {
-    // Example usage of wns_BiquadFilter
+    const std::string inputPath = "audio/multi_440_880_1760_2000ms.wav";
+    const std::string outputPath = "log/multi_440_880_1760_2000ms_lowpass.wav";
+
+    // Allocate BufferChunk and copy data
+    wns_infrastructure::wns_BufferManager *bufferManager;
+    wns_modules::WNS_Preprocessing *audioProcessor;
+    wns_infrastructure::BufferChunk inChunk;
+
+    if (audioProcessor->readAudioToBuffer(inputPath, inChunk) != WSN_NO_ERROR) {
+        std::cerr << "Failed to read audio to buffer" << std::endl;
+        return 1;
+    }
+    audioProcessor->writeBufferToTxt("multi_440_880_1760_2000ms", inChunk);
+
+    // Prepare filter
     wns_Kernels::wns_BiquadFilter biquadFilter;
-    wns_infrastructure::wns_BufferManager bufferManager;
-    
-    const size_t frame = 512;
-    const int channels = 2;
-    const int sampleRate = static_cast<int>(wns_Common::SAMPLING_FREQUENCY);
+    biquadFilter.vSetFilterParams(1000, 0.707, 0.0, 1.0);
+    biquadFilter.eSetFilterType(wns_Kernels::wns_BiquadType::HIGHPASS);
 
-    auto testChunk = bufferManager.allocateBuffer(frame, channels, sampleRate);
+    wns_infrastructure::BufferChunk outChunk;
+    outChunk = inChunk;
 
-    for (size_t i = 0; i < testChunk->samples(); ++i) {
-        testChunk->pBuffer[i] = 0.7f;
+    if (biquadFilter.vProcess(inChunk, outChunk) != WSN_NO_ERROR) {
+        std::cerr << "Filter processing failed" << std::endl;
+        return 3;
     }
 
-    biquadFilter.vSetFilterParams(1000.0, 0.707, 0.0, 1.0);
-    biquadFilter.eSetFilterType(wns_Kernels::wns_BiquadType::LOWPASS);
-
-    auto lowPassBuffer = bufferManager.allocateBuffer(frame, channels, sampleRate);
-    biquadFilter.vProcess(*testChunk, *lowPassBuffer);
-
-    for(int i = 0; i < lowPassBuffer->samples(); ++i) {
-        std::cout << lowPassBuffer->pBuffer[i] << std::endl;
-    }
+    audioProcessor->writeBufferToAudio(outputPath, outChunk);
+    audioProcessor->writeBufferToTxt("multi_440_880_1760_2000ms_highpass", outChunk);
 
     return 0;
 }
