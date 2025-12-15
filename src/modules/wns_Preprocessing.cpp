@@ -107,6 +107,23 @@ static bool writeWavFloat(const std::string& path, const std::vector<float>& in,
 }
 #endif
 
+// Compute RMS (linear) across all samples in BufferChunk
+static double computeRMS(const wns_infrastructure::BufferChunk &b) {
+    const float *p = b.data();
+    size_t N = b.samples();
+    if (N == 0) return 0.0;
+    double sum = 0.0;
+    for (size_t i = 0; i < N; ++i) { double v = p[i]; sum += v*v; }
+    return std::sqrt(sum / double(N));
+}
+
+// Apply scalar gain in-place
+static void applyScalarGain(wns_infrastructure::BufferChunk &buffer, double gain) {
+    float *p = buffer.data();
+    size_t N = buffer.samples();
+    for (size_t i = 0; i < N; ++i) p[i] = static_cast<float>(p[i] * gain);
+}
+
 namespace wns_modules {
 
 WNS_Preprocessing::WNS_Preprocessing() {}
@@ -178,8 +195,9 @@ wsn_eF WNS_Preprocessing::writeBufferToAudio(const std::string& outputPath, cons
 	return WSN_NO_ERROR;
 }
 
-wsn_eF WNS_Preprocessing::writeBufferToTxt(const std::string& filename, const wns_infrastructure::BufferChunk& buffer) {
-	if (buffer.frames == 0 || buffer.channels <= 0) return WSN_INVALID_ARGUMENT;
+wsn_eF WNS_Preprocessing::writeBufferToTxt(const std::string &filename, const wns_infrastructure::BufferChunk &buffer)
+{
+    if (buffer.frames == 0 || buffer.channels <= 0) return WSN_INVALID_ARGUMENT;
 
 	std::string fullPath = "log/" + filename + ".txt";
 	std::ofstream f(fullPath);
@@ -194,4 +212,21 @@ wsn_eF WNS_Preprocessing::writeBufferToTxt(const std::string& filename, const wn
 	return WSN_NO_ERROR;
 }
 
+wsn_eF WNS_Preprocessing::compensateGainRMS(const wns_infrastructure::BufferChunk &bufferIn, wns_infrastructure::BufferChunk &bufferOut, double maxBoostDB)
+{
+    if (bufferIn.frames == 0 || bufferIn.channels <= 0) return WSN_INVALID_ARGUMENT;
+    if (bufferIn.samples() != bufferOut.samples()) return WSN_INVALID_ARGUMENT;
+
+    double rmsIn = computeRMS(bufferIn);
+    double rmsOut = computeRMS(bufferOut);
+    if (rmsOut <= 1e-12 || rmsIn <= 1e-12) return WSN_NO_ERROR; // nothing to do
+
+    double desiredGain = rmsIn / rmsOut;
+    double maxBoost = std::pow(10.0, maxBoostDB / 20.0);
+    if(desiredGain > maxBoost) desiredGain = maxBoost;
+
+    WNS_LOG("Applying gain: ", desiredGain);
+    applyScalarGain(bufferOut, desiredGain);
+    return WSN_NO_ERROR;
+}
 } // namespace wns_modules

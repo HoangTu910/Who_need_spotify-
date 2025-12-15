@@ -93,7 +93,7 @@ def main():
     p.add_argument('-C', '--channel', type=int, default=0, help='Channel index to plot (0-based)')
     p.add_argument('-s', '--samplerate', type=int, default=48000, help='Sampling rate in Hz (default 48000)')
     p.add_argument('-d', '--duration', type=float, default=None, help='Duration in seconds to plot (default all)')
-    p.add_argument('-o', '--out', default=None, help='Optional output PNG path')
+    p.add_argument('-o', '--out', default=os.path.join('test', 'log_plot.png'), help='Optional output PNG path (default: test/log_plot.png)')
     args = p.parse_args()
 
     if not os.path.exists(args.file):

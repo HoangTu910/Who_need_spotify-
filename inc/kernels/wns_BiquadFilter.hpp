@@ -51,6 +51,7 @@ public:
     wsn_eF vProcess(const wns_infrastructure::BufferChunk &bufferIn, 
                     wns_infrastructure::BufferChunk &bufferOut);
 private:
+    wns_BiquadType eFilterType;
     double dGaindB /* Only for PEAKING and SHELVING EQ filters */, 
            dShelfSlope, 
            dQfactor,

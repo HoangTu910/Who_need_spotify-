@@ -23,8 +23,8 @@ int main()
 
     // Prepare filter
     wns_Kernels::wns_BiquadFilter biquadFilter;
-    biquadFilter.vSetFilterParams(1000, 0.707, 0.0, 1.0);
-    biquadFilter.eSetFilterType(wns_Kernels::wns_BiquadType::HIGHPASS);
+    biquadFilter.vSetFilterParams(440, 0.707, 0.0, 1.0);
+    biquadFilter.eSetFilterType(wns_Kernels::wns_BiquadType::LOWPASS);
 
     wns_infrastructure::BufferChunk outChunk;
     outChunk = inChunk;
@@ -34,8 +34,10 @@ int main()
         return 3;
     }
 
+    // audioProcessor->compensateGainRMS(inChunk, outChunk);
+
     audioProcessor->writeBufferToAudio(outputPath, outChunk);
-    audioProcessor->writeBufferToTxt("multi_440_880_1760_2000ms_highpass", outChunk);
+    audioProcessor->writeBufferToTxt("multi_440_880_1760_2000ms_lowpass", outChunk);
 
     return 0;
 }

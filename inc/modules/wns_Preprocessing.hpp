@@ -2,6 +2,8 @@
 #define WNS_PREPROCESSING_HPP
 
 #include "../pipeline/IAudioModules.hpp"
+#include "../common/wsn_Common.hpp"
+#include "../utils/wsn_utils.hpp"
 #include <string>
 #include <vector>
 
@@ -21,6 +23,10 @@ public:
     wsn_eF writeBufferToAudio(const std::string& outputPath, const wns_infrastructure::BufferChunk& buffer);
 	// Write buffer values into a text file under log/<filename>.txt (one sample per line).
 	wsn_eF writeBufferToTxt(const std::string& filename, const wns_infrastructure::BufferChunk& buffer);
+
+    wsn_eF compensateGainRMS(const wns_infrastructure::BufferChunk &bufferIn,
+                             wns_infrastructure::BufferChunk &bufferOut,
+                             double maxBoostDB = 12.0 /* +12dB max */);
 };
 
 } // namespace wns_modules

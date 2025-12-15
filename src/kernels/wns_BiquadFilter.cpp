@@ -30,6 +30,7 @@ wsn_eF wns_BiquadFilter::eSetFilterType(wns_BiquadType type)
 {
     if(!bIsParamSet) return WSN_UNSET_FILTER_PARAMETERS;
 
+    eFilterType = type;
     dOmega = 2.0 * wns_Common::PI * dFc / wns_Common::SAMPLING_FREQUENCY;
     dAlpha = sin(dOmega) / (2.0 * dQfactor);
     dA = pow(10.0, dGaindB / 40.0);
@@ -148,7 +149,15 @@ wsn_eF wns_Kernels::wns_BiquadFilter::vProcess(const wns_infrastructure::BufferC
                                                wns_infrastructure::BufferChunk &bufferOut)
 {
     if (!bIsParamSet) return WSN_UNSET_FILTER_PARAMETERS;
-
+    WNS_LOG("Called biquad filter");
+    std::cout << "------ Filter Params details ------\n"
+              << "FilterType = " << eFilterType << "\n"
+              << "b0 = " << sCoeffs.b0 << "\n"
+              << "b1 = " << sCoeffs.b1 << "\n"
+              << "b2 = " << sCoeffs.b2 << "\n"
+              << "a0 = " << sCoeffs.a0 << "\n"
+              << "a1 = " << sCoeffs.a1 << "\n"
+              << "a2 = " << sCoeffs.a2 << std::endl;
     // Process each sample in the buffer
     for (size_t i = 0; i < bufferIn.samples(); ++i) {
         double inputSample = bufferIn.data()[i];
