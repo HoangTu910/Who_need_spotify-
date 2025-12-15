@@ -1,5 +1,7 @@
 #include "../inc/modules/wns_Limiter.hpp"
 
+namespace wns_modules {
+
 void WNS_Limiter::vDownSampleAndProcess(float *input, float *output, int numSamples)
 {
     int downSampledSamples = numSamples / nDownSampleFactor;
@@ -16,3 +18,7 @@ void WNS_Limiter::vDownSampleAndProcess(float *input, float *output, int numSamp
         fPeakValue = std::max(fPeakValue, fPeakSignal);
     }
 }
+
+wsn_eF WNS_Limiter::vProcess(const wns_infrastructure::BufferChunk &buffer){ return wsn_eF(); }
+
+} // namespace wns_modules

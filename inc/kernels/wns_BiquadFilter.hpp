@@ -8,8 +8,9 @@
 
 #include "../common/wsn_Common.hpp"
 #include "../common/wsn_ErrorCodes.hpp"
+#include "../buffer/wns_BufferManagement.hpp"
 
-namespace wns_Filters
+namespace wns_Kernels
 {
 struct wns_BiquadCoefficients
 {
@@ -47,6 +48,8 @@ public:
     wsn_eF eSetFilterType(wns_BiquadType type);
     void vSetFilterParams(double dFc, double dQ, double dGainDB = 0.0, double dSlope = 1.0);
     double sExecute(double dInputSample);
+    wsn_eF vProcess(const wns_infrastructure::BufferChunk &bufferIn, 
+                    wns_infrastructure::BufferChunk &bufferOut);
 private:
     double dGaindB /* Only for PEAKING and SHELVING EQ filters */, 
            dShelfSlope, 

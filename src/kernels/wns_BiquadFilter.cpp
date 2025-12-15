@@ -1,7 +1,7 @@
-#include "../inc/filters/wns_BiquadFilter.hpp"
+#include "../inc/kernels/wns_BiquadFilter.hpp"
 #include "../utils/wsn_utils.hpp"
 
-namespace wns_Filters
+namespace wns_Kernels
 {
 wns_BiquadFilter::wns_BiquadFilter()
 {
@@ -17,10 +17,7 @@ wns_BiquadFilter::~wns_BiquadFilter()
 
 wsn_eF wns_BiquadFilter::eSetFilterType(wns_BiquadType type)
 {
-    if(!bIsParamSet)
-    {
-        return WSN_UNSET_PARAMETERS;
-    }
+    if(!bIsParamSet) return WSN_UNSET_FILTER_PARAMETERS;
 
     dOmega = 2.0 * wns_Common::PI * dFc / wns_Common::SAMPLING_FREQUENCY;
     dAlpha = sin(dOmega) / (2.0 * dQfactor);
@@ -116,7 +113,7 @@ void wns_BiquadFilter::vSetFilterParams(double dFc, double dQ, double dGainDB, d
 }
 }
 
-double wns_Filters::wns_BiquadFilter::sExecute(double dInputSample)
+double wns_Kernels::wns_BiquadFilter::sExecute(double dInputSample)
 {
     double dOutputSample = (sCoeffs.b0 / sCoeffs.a0) * dInputSample +
                            (sCoeffs.b1 / sCoeffs.a0) * dXn1 +
@@ -124,4 +121,18 @@ double wns_Filters::wns_BiquadFilter::sExecute(double dInputSample)
                            (sCoeffs.a1 / sCoeffs.a0) * dYn1 -
                            (sCoeffs.a2 / sCoeffs.a0) * dYn2;
     return dOutputSample;
+}
+
+wsn_eF wns_Kernels::wns_BiquadFilter::vProcess(const wns_infrastructure::BufferChunk &bufferIn,
+                                               wns_infrastructure::BufferChunk &bufferOut)
+{
+    if (!bIsParamSet) return WSN_UNSET_FILTER_PARAMETERS;
+
+    // Process each sample in the buffer
+    for (size_t i = 0; i < bufferIn.samples(); ++i) {
+        double inputSample = bufferIn.data()[i];
+        double outputSample = sExecute(inputSample);
+        bufferOut.data()[i] = outputSample;
+    }
+    return WSN_NO_ERROR;
 }

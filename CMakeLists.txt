@@ -18,4 +18,6 @@ include_directories(
 
 add_subdirectory(src)    # Process src/CMakeLists.txt
 # add_subdirectory(test)   # Process test/CMakeLists.txt
+# Enable building tests in the `test/` folder (uncomment to enable)
+add_subdirectory(test)
 # --- IGNORE ---
