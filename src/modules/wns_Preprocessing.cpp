@@ -129,7 +129,7 @@ namespace wns_modules {
 WNS_Preprocessing::WNS_Preprocessing() {}
 WNS_Preprocessing::~WNS_Preprocessing() {}
 
-wsn_eF WNS_Preprocessing::vProcess(const wns_infrastructure::BufferChunk& buffer) { (void)buffer; return WSN_NO_ERROR; }
+wsn_eF WNS_Preprocessing::vProcess(const wns_infrastructure::BufferChunk& bufferIn, wns_infrastructure::BufferChunk& bufferOut) { (void)bufferIn; return WSN_NO_ERROR; }
 
 wsn_eF WNS_Preprocessing::processFile(const std::string& inputPath, const std::string& outputPath) {
 	std::vector<float> samples;
@@ -147,7 +147,7 @@ wsn_eF WNS_Preprocessing::processFile(const std::string& inputPath, const std::s
 	chunk.copyFrom(samples.data(), samples.size());
 
 	// call processing (in-place)
-	wsn_eF err = vProcess(chunk);
+	wsn_eF err = vProcess(chunk, chunk);
 	if (err != WSN_NO_ERROR) {
 		std::cerr << "Processing failed with code: " << err << std::endl;
 		return err;

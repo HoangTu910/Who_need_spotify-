@@ -14,7 +14,7 @@ public:
 	WNS_Preprocessing();
 	~WNS_Preprocessing();
 
-	wsn_eF vProcess(const wns_infrastructure::BufferChunk& buffer) override;
+	wsn_eF vProcess(const wns_infrastructure::BufferChunk& bufferIn, wns_infrastructure::BufferChunk& bufferOut) override;
 
 	// High-level helper: load an audio file, process it through this module, and write output.
 	// Non-realtime: performs file I/O and should be called from a non-realtime thread.

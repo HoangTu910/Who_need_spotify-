@@ -27,7 +27,7 @@ public:
     // Process audio buffer on the realtime thread. `buffer` references a BufferChunk which
     // contains metadata and a float vector `pBuffer`. Implementations must treat this
     // call as realtime-critical and must not perform allocations or locking.
-    virtual wsn_eF vProcess(const wns_infrastructure::BufferChunk& buffer) = 0;
+    virtual wsn_eF vProcess(const wns_infrastructure::BufferChunk& bufferIn, wns_infrastructure::BufferChunk& bufferOut) = 0;
 
     // Release resources allocated in prepare(). Non-realtime.
     virtual void release() { }
@@ -44,7 +44,7 @@ public:
         wns_infrastructure::BufferChunk tmp(static_cast<size_t>(numSamples), 1, static_cast<int>(wns_Common::SAMPLING_FREQUENCY));
         size_t copyCount = std::min(tmp.pBuffer.size(), static_cast<size_t>(numSamples));
         for (size_t i = 0; i < copyCount; ++i) tmp.pBuffer[i] = buffer[i];
-        return vProcess(tmp);
+        return vProcess(tmp, tmp);
     }
 };
 

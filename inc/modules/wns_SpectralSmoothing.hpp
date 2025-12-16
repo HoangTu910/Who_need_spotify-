@@ -10,7 +10,7 @@ public:
 	WNS_SpectralSmoothing();
 	~WNS_SpectralSmoothing();
 
-	wsn_eF vProcess(const wns_infrastructure::BufferChunk& buffer) override;
+	wsn_eF vProcess(const wns_infrastructure::BufferChunk& bufferIn, wns_infrastructure::BufferChunk& bufferOut) override;
 };
 
 } // namespace wns_modules

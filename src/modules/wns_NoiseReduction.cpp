@@ -6,6 +6,6 @@ WNS_NoiseReduction::WNS_NoiseReduction() {}
 WNS_NoiseReduction::~WNS_NoiseReduction() {}
 
 void WNS_NoiseReduction::vConfigure() {}
-wsn_eF WNS_NoiseReduction::vProcess(const wns_infrastructure::BufferChunk& buffer) { (void)buffer; return WSN_NO_ERROR; }
+wsn_eF WNS_NoiseReduction::vProcess(const wns_infrastructure::BufferChunk& bufferIn, wns_infrastructure::BufferChunk& bufferOut) { (void)bufferIn; return WSN_NO_ERROR; }
 
 } // namespace wns_modules

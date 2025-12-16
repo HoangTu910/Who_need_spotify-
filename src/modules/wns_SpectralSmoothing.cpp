@@ -5,6 +5,6 @@ namespace wns_modules {
 WNS_SpectralSmoothing::WNS_SpectralSmoothing() {}
 WNS_SpectralSmoothing::~WNS_SpectralSmoothing() {}
 
-wsn_eF WNS_SpectralSmoothing::vProcess(const wns_infrastructure::BufferChunk& buffer) { (void)buffer; return WSN_NO_ERROR; }
+wsn_eF WNS_SpectralSmoothing::vProcess(const wns_infrastructure::BufferChunk& bufferIn, wns_infrastructure::BufferChunk& bufferOut) { (void)bufferIn; return WSN_NO_ERROR; }
 
 } // namespace wns_modules

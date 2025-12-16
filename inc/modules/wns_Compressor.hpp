@@ -12,7 +12,7 @@ public:
 
 	void vSetThreshold(float threshold);
 	void vSetRatio(float ratio);
-	wsn_eF vProcess(const wns_infrastructure::BufferChunk& buffer) override;
+	wsn_eF vProcess(const wns_infrastructure::BufferChunk& bufferIn, wns_infrastructure::BufferChunk& bufferOut) override;
 };
 
 } // namespace wns_modules
